@@ -5,6 +5,7 @@ import com.assignments.project.client.mapper.ClientMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ public class ClientService {
 
     public List<ClientDTO> findAll() {
         return clientRepository.findAll().stream()
-                .map(clientMapper ::clientToClientDTO)
+                .map(clientMapper ::clientToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -26,7 +27,7 @@ public class ClientService {
     }
 
     public void save(ClientDTO clientDTO) {
-        clientRepository.save(clientMapper.clientDTOToClient(clientDTO));
+        clientRepository.save(clientMapper.clientFromDTO(clientDTO));
     }
 
     public void deleteByID(long id) {
@@ -34,7 +35,7 @@ public class ClientService {
     }
 
     public ClientDTO findById(Long id) {
-        Optional<ClientDTO> result = clientRepository.findById(id).map(clientMapper :: clientToClientDTO);
-        return result.orElse(null);
+        return clientRepository.findById(id).map(clientMapper ::clientToDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Client not found: " + id));
     }
 }

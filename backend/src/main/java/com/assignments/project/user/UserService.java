@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class UserService {
 
     public List<UserDTO> findAll() {
         return userRepository.findAll().stream()
-                .map(userMapper ::userToUserDTO)
+                .map(userMapper ::userToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -39,7 +40,7 @@ public class UserService {
     }
 
     public void save(UserDTO userDTO) {
-        User user = userMapper.userDTOToUser(userDTO);
+        User user = userMapper.userFromDTO(userDTO);
 
         Role role;
 
@@ -60,8 +61,8 @@ public class UserService {
     }
 
     public UserDTO findById(Long id) {
-        Optional<UserDTO> result = userRepository.findById(id).map(userMapper :: userToUserDTO);
-        return result.orElse(null);
+        return userRepository.findById(id).map(userMapper ::userToDTO)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + id));
     }
 
     public List<UserDTO> findByRole(ERole eRole) {
@@ -74,6 +75,6 @@ public class UserService {
                     .orElseThrow(() -> new RuntimeException("Cannot find role: " + eRole));
         }
 
-        return userRepository.findByRole(role).stream().map(userMapper :: userToUserDTO).collect(Collectors.toList());
+        return userRepository.findByRole(role).stream().map(userMapper ::userToDTO).collect(Collectors.toList());
     }
 }

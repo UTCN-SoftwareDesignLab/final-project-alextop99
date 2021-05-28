@@ -1,4 +1,4 @@
-package com.assignments.project.controllers;
+package com.assignments.project.user;
 
 import com.assignments.project.user.UserService;
 import com.assignments.project.user.dto.UserDTO;

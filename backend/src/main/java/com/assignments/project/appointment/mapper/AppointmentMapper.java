@@ -11,11 +11,11 @@ public interface AppointmentMapper {
             target = "user.role",
             ignore = true
     )
-    Appointment appointmentDTOToAppointment(AppointmentDTO appointmentDTO);
+    Appointment appointmentFromDTO(AppointmentDTO appointmentDTO);
 
     @Mapping(
             target = "user.role",
             ignore = true
     )
-    AppointmentDTO appointmentToAppointmentDTO(Appointment appointment);
+    AppointmentDTO appointmentToDTO(Appointment appointment);
 }

@@ -12,8 +12,8 @@ public interface UserMapper {
             target = "role",
             source = "role.name"
     )
-    UserDTO userToUserDTO(User user);
+    UserDTO userToDTO(User user);
 
     @InheritInverseConfiguration
-    User userDTOToUser(UserDTO userDTO);
+    User userFromDTO(UserDTO userDTO);
 }

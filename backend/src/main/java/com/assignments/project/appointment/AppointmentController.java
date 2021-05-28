@@ -1,4 +1,4 @@
-package com.assignments.project.controllers;
+package com.assignments.project.appointment;
 
 import com.assignments.project.appointment.AppointmentService;
 import com.assignments.project.appointment.dto.AppointmentDTO;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -83,14 +84,14 @@ public class AppointmentController {
     public @ResponseBody byte[] generateReceipt(@PathVariable ReceiptType receiptType, @Valid @RequestBody ReceiptDTO receiptDTO) {
         String result = receiptServiceFactory.getReceiptService(receiptType).export(receiptDTO);
 
-        if(result.equals("Failure"))
-            return null;
-        try {
-            emailService.emailReceipt(receiptDTO.getCar().getClient().getEmail(), result);
-            return Files.readAllBytes(Paths.get(result));
-        } catch (IOException | MessagingException e) {
-            e.printStackTrace();
+        if(!result.equals("Failed")) {
+            try {
+                emailService.emailReceipt(receiptDTO.getCar().getClient().getEmail(), result);
+                return Files.readAllBytes(Paths.get(result));
+            } catch (IOException | MessagingException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+        return "Failed".getBytes(StandardCharsets.UTF_8);
     }
 }

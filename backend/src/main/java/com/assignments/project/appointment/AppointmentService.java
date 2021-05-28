@@ -8,6 +8,7 @@ import com.assignments.project.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public class AppointmentService {
 
     public List<AppointmentDTO> findAll() {
         return appointmentRepository.findAll().stream()
-                .map(appointmentMapper ::appointmentToAppointmentDTO)
+                .map(appointmentMapper ::appointmentToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -32,13 +33,13 @@ public class AppointmentService {
         LocalDateTime endOfDay = date.atStartOfDay().plusHours(24);
 
         return appointmentRepository.findAllByDateTimeBetweenAndUserIdOrderByDateTimeAsc(startOfDay, endOfDay, mechanicId).stream()
-                .map(appointmentMapper ::appointmentToAppointmentDTO)
+                .map(appointmentMapper ::appointmentToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<AppointmentDTO> findAllByCarId(Long carId, LocalDateTime date) {
         return appointmentRepository.findAllByCarIdAndDateTimeNotOrderByDateTimeDesc(carId, date).stream()
-                .map(appointmentMapper ::appointmentToAppointmentDTO)
+                .map(appointmentMapper ::appointmentToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -55,7 +56,7 @@ public class AppointmentService {
     }
 
     public void save(AppointmentDTO appointmentDTO) {
-        Appointment appointment = appointmentMapper.appointmentDTOToAppointment(appointmentDTO);
+        Appointment appointment = appointmentMapper.appointmentFromDTO(appointmentDTO);
         User user = userRepository.findById(appointment.getUser().getId()).get();
 
         appointment.setUser(user);
@@ -68,7 +69,7 @@ public class AppointmentService {
     }
 
     public AppointmentDTO findById(Long id) {
-        Optional<AppointmentDTO> result = appointmentRepository.findById(id).map(appointmentMapper :: appointmentToAppointmentDTO);
-        return result.orElse(null);
+        return appointmentRepository.findById(id).map(appointmentMapper ::appointmentToDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Appointment not found: " + id));
     }
 }

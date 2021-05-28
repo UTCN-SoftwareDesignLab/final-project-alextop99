@@ -7,6 +7,7 @@ import com.assignments.project.car.model.Car;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ public class CarService {
 
     public List<CarDTO> findAll() {
         return carRepository.findAll().stream()
-                .map(carMapper ::carToCarDTO)
+                .map(carMapper ::carToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -29,7 +30,7 @@ public class CarService {
     }
 
     public void save(CarDTO carDTO) {
-        carRepository.save(carMapper.carDTOToCar(carDTO));
+        carRepository.save(carMapper.carFromDTO(carDTO));
     }
 
     public void deleteByID(long id) {
@@ -46,7 +47,7 @@ public class CarService {
     }
 
     public CarDTO findById(Long id) {
-        Optional<CarDTO> result = carRepository.findById(id).map(carMapper :: carToCarDTO);
-        return result.orElse(null);
+        return carRepository.findById(id).map(carMapper ::carToDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Car not found: " + id));
     }
 }
