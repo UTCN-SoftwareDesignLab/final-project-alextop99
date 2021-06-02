@@ -14,11 +14,11 @@ export default {
     },
     getReceipt(AppointmentData) {
         return HTTP.post(BASE_URL + "/appointments/receipt/PDF", AppointmentData, { responseType: 'blob', headers: getToken() }).then((response) => {
-            if(response.data.size > 0) {
-                if(!response.data.startsWith("Failed"))
-                    saveFile("PDF", response);
-                else
-                    console.log("Receipt generation has failed! Please contact an ADMIN!");
+            if(response.data.size > 9) {
+                saveFile("PDF", response);
+            }
+            else {
+                console.log("Receipt generation has failed! Please contact an ADMIN!");
             }
             return response.data;
         });

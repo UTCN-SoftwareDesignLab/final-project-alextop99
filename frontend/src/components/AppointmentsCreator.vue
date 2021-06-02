@@ -130,7 +130,7 @@ export default {
       api.appointments.deleteById(this.appointment.id).then(() => this.$router.go());
     },
     CheckInBtn() {
-      this.CheckIn(this.appointment.car.matNb + " " + this.appointment.car.vin, this.appointment.date, this.appointment.user.username);
+      this.CheckIn(this.appointment.car.matNb + " " + this.appointment.car.vin, this.appointment.dateTime, this.appointment.user.username);
     },
     GetReceipt() {
       api.appointments.getReceipt({

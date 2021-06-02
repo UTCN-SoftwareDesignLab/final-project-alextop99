@@ -67,9 +67,9 @@ public class AppointmentController {
     @PatchMapping(UPDATE)
     @Secured({"SECRETARY", "MECHANIC"})
     public void update(@Valid @RequestBody AppointmentDTO appointmentDTO) {
-        if(appointmentDTO.getFinished()) {
+        /*if(appointmentDTO.getFinished()) {
             emailService.emailCarFinished(appointmentDTO.getCar().getClient().getEmail());
-        }
+        }*/
         appointmentService.update(appointmentDTO);
     }
 
@@ -86,9 +86,10 @@ public class AppointmentController {
 
         if(!result.equals("Failed")) {
             try {
-                emailService.emailReceipt(receiptDTO.getCar().getClient().getEmail(), result);
+                //emailService.emailReceipt(receiptDTO.getCar().getClient().getEmail(), result);
                 return Files.readAllBytes(Paths.get(result));
-            } catch (IOException | MessagingException e) {
+            } //catch (IOException | MessagingException e) {
+            catch (IOException e) {
                 e.printStackTrace();
             }
         }

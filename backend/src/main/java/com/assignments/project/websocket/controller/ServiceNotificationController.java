@@ -13,7 +13,7 @@ public class ServiceNotificationController {
     @SendTo("/mechanic/checkin")
     public ResponseMessage checkIn(ReceiveMessage receiveMessage) {
         return new ResponseMessage("The car, " + receiveMessage.getCarMatNb()
-                + ", with consultation at "
+                + ", with appointment at "
                 + receiveMessage.getHour()
                 + " has arrived!"
                 ,receiveMessage.getMechanicName());
